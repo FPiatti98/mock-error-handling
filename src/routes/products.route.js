@@ -1,7 +1,10 @@
 import { Router } from "express";
 import { createProduct, getAllProducts , getProductById , updateProduct , deleteProduct } from "../controllers/products.controller.js";
+import { addLogger } from "../config/logger.js";
 
 const router = Router();
+
+router.use(addLogger);
 
 //Controller
 router.post('/products', createProduct);

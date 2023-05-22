@@ -37,6 +37,7 @@ app.set('views', __dirname+'/views');
 app.set('view engine','handlebars');
 
 //Session
+
 const MONGO_URL = config.mongoUrl
 //config.mongoUrl
 app.use(session({

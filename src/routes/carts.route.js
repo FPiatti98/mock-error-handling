@@ -1,7 +1,10 @@
 import { Router } from "express";
 import { createCart , getCartById , addProdToCart , deleteProdinCart , updateProdQuantity , deleteProdsInCart , generatePurchase } from "../controllers/carts.controller.js";
+import { addLogger } from "../config/logger.js";
 
 const router = Router();
+
+router.use(addLogger);
 
 router.post('/carts', createCart);
 router.get('/carts/:id', getCartById);

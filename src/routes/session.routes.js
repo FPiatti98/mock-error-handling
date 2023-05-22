@@ -1,12 +1,13 @@
 import { Router } from "express";
 import passport from "passport";
 import UserDTO from "../DTO/user.dto.js";
+import { addLogger } from "../config/logger.js";
 // import { userModel } from "../db/mongodb/models/user.model.js";
 // import { createHash, isValidPassword } from "../util.js";
 
 const router = Router();
 
-
+router.use(addLogger);
 /*
 
 session routes without passport
