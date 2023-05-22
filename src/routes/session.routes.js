@@ -84,13 +84,14 @@ router.post("/register", passport.authenticate(
     'register', {failureRedirect: '/api/sessions/fail-register'})
     , async (req, res) => {
         console.log("registrando nuevo usuario");
+        req.logger.info("Usuario creado con exito")
         res.status(201).send({status: "success", message: "Usuario creado con exito"});
     });
     
 router.post("/login", passport.authenticate('login', {failureRedirect: '/api/sessions/fail-login'}), async(req, res) => {
     console.log("User found to login");
     const user = req.user;
-    console.log(user);
+    req.logger.info(user);
     if(!user) return res.status(401).send({status: "error", error: "El usuario y la contraseña no coinciden "});
     req.session.user = new UserDTO(user);
     res.send({status: "success", payload: req.session.user, message: "Usuario logueado con exito"});

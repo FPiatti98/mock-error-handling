@@ -13,8 +13,10 @@ const controller = new Cartsrepository;
 export const createCart = async(req, res) => {
     try {
         const cart = await controller.create()
+        req.logger.info('Carrito creado')
         return res.send(cart);
     } catch (error) {
+        req.logger.error(error)
         return res.status(500).send({status: "error", message : error.message});
     }
 };
@@ -25,6 +27,7 @@ export const getCartById = async(req, res) => {
         const newCart = await cart.populate('products._id');
         return res.send(newCart);
     } catch (error) { 
+        req.logger.error(error)
         return res.status(500).send({status: "error", message : error.message});
     }
 }
@@ -39,12 +42,14 @@ export const addProdToCart = async(req, res) => {
 
             cart.products.push({_id : new mongo.ObjectId(req.params.pid) , quantity : 1});
             const newCart = await cart.save();
+            req.logger.info(`El producto con el id: ${req.params.pid} fue agregado al carrito exitosamente`)
             return res.send(newCart);
 
         } else {
         
             const newQuantity = arrprod[0].quantity + 1
             const updatedCart = controller.updateQuantity(cart._id, arrprod[0]._id, newQuantity)
+            req.logger.info(`La cantidad del producto con el id: ${req.params.pid} fue actualizada correctamente`)
             return res.status(200).send({status: "success", message : "quantity updated successfully"});
         }
 
@@ -76,6 +81,7 @@ export const addProdToCart = async(req, res) => {
             */
 
     } catch (error) {
+        req.logger.error(error)
         return res.status(500).send({status: "error", message : error.message});
     }
 }
@@ -92,9 +98,11 @@ export const deleteProdinCart = async(req, res) => {
         });
 
         const newCart = await cart.save();
+        req.logger.info(`El producto con el id: ${req.params.pid} fue eliminado del carrito exitosamente`)
         return res.send(newCart);
 
     } catch (error) {
+        req.logger.error(error)
         return res.status(500).send({status: "error", message : error.message});
     }
 };
@@ -111,10 +119,12 @@ export const updateProdQuantity = async(req, res) => {
             return res.status(500).send({status: "error", message : "Quantity no existe en el body del request"});
         } else {
             const updatedCart = controller.updateQuantity(cart._id, arrprod[0]._id, newQuantity)
+            req.logger.info(`La cantidad del producto con el id: ${req.params.pid} fue actualizada correctamente`)
             return res.status(200).send({status: "success", message : "quantity updated successfully"});
         }
 
     } catch (error) {
+        req.logger.error(error)
         return res.status(500).send({status: "error", message : error.message});
     }
 };
@@ -125,8 +135,10 @@ export const deleteProdsInCart = async(req, res) => {
 
         const updatedCart = await controller.deleteProds(cart._id)
 
+        req.logger.info(`Los productos del carrito ${req.params.cid} fueron eliminados correctamente`)
         return res.send(updatedCart);
     } catch (error) {
+        req.logger.error(error)
         return res.status(500).send({status: "error", message : error.message});
     }
 };
@@ -152,7 +164,7 @@ export const generatePurchase = async(req, res) => {
                 totalPurchasePrice = totalPurchasePrice + totalPriceProduct
             } else {
                 productsRetained.push(cart.products[i]._id.toString());
-                console.log(`El producto con el id ${cart.products[i]._id} no se pudo agregar a la compra`)
+                req.logger.warn(`El producto con el id ${cart.products[i]._id} no se pudo agregar a la compra`)
             }
         }
         //eliminar el producto del carrito
@@ -202,9 +214,11 @@ export const generatePurchase = async(req, res) => {
 
         const newTicket = await ticketController.create(ticket);
 
+        req.logger.info("ticket creado correctamente")
         return res.status(200).send({status: "success", message : "Se ha generado el ticket exitosamente", ticket: newTicket});
 
     } catch (error) {
+        req.logger.error(error)
         return res.status(500).send({status: "error", message : "No se pudo generar el ticket de compra, error:" + error.message});
     }
 }

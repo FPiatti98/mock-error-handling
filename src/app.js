@@ -18,6 +18,7 @@ import productsViewsRouter from './routes/viewsRouters/products.views.routes.js'
 import UserViewsRouter from './routes/viewsRouters/user.views.routes.js'
 import sessionsRouter from './routes/session.routes.js'
 import mockRouter from '../src/mock/mock.router.js'
+import loggerRouter from '../src/routes/loggerTest.routes.js'
 //import productsRouter from '../src/service/fylesystem/routes/productsRoutes.js'
 //import cartsRouter from '../src/service/fylesystem/routes/cartRoutes.js';
 //import githubLoginRouter from './routes/githublogin.routes.js'
@@ -37,6 +38,7 @@ app.set('view engine','handlebars');
 
 //Session
 const MONGO_URL = config.mongoUrl
+//config.mongoUrl
 app.use(session({
     store: MongoStore.create({
         mongoUrl: MONGO_URL,
@@ -64,10 +66,11 @@ app.use('/', productsViewsRouter);
 app.use("/users", UserViewsRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/mockingproducts", mockRouter);
-
+app.use('/loggerTest', loggerRouter);
 
 //Server / MongoDB
 const SERVER_PORT = config.port
+//config.port
 const httpServer = app.listen(SERVER_PORT, () => {console.log(`Escuchando desde el puerto ${SERVER_PORT}`);});
 
 const connectMongoDB = async () => {

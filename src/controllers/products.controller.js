@@ -22,12 +22,14 @@ export const createProduct = async(req, res) => {
     
         const producto = await controller.create(req.body);
         
+        req.logger.info('Producto creado')
         return res.send(producto)
         
     } catch (error) {
         if(error.code === EErrors.INVALID_TYPES_ERROR) {
             res.status(400).send({status: "error", message: error.cause})
         } else {
+            req.logger.error(error)
             return res.status(500).send({status: "error", message : error.message});
         }
     }
@@ -65,6 +67,7 @@ export const getAllProducts = async(req, res) => {
         return res.send(Products)
 
     } catch (error) {
+        req.logger.error(error)
         return res.status(500).send({status: "error", message : error.message});
     }
 }
@@ -74,6 +77,7 @@ export const getProductById = async(req, res) => {
         const prod = await controller.getById(req.params.id);
         return res.send(prod)
     } catch (error) {
+        req.logger.error(error)
         return res.status(500).send({status: "error", message : error.message});
     }
 };
@@ -83,6 +87,7 @@ export const updateProduct = async(req, res) => {
         const updatedProd = await controller.update(req.params.id, req.body)
         return res.send(updatedProd);
     } catch (error) {
+        req.logger.error(error)
         return res.status(500).send({status: "error", message : error.message});
     }
 };
@@ -90,8 +95,10 @@ export const updateProduct = async(req, res) => {
 export const deleteProduct = async(req, res) => {
     try {
         const deletedProd = await controller.delete(req.params.id);
+        req.logger.info('Producto eliminado')
         return res.send(deletedProd);
     } catch (error) {
+        req.logger.error(error)
         return res.status(500).send({status: "error", message : error.message});
     }
 };
